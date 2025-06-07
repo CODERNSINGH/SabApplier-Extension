@@ -1,29 +1,3 @@
-// import React from 'react';
-// import './AccOption.css';
-
-// export default function AccountDropdown({ users, onSelect }) {
-//   return (
-//     <div className='account-dropdown'>
-      
-//       <label htmlFor="userSelect">Continue As</label>
-//       <select
-//         id="userSelect"
-//         onChange={(e) => {
-//           if (e.target.value) onSelect(e.target.value);
-//         }}
-//       >
-//         <option value="">-- Choose a user --</option>
-//         {users.map(([email, data], idx) => (
-//           <option key={idx} value={email}>
-//             {data.name} ({email})
-//           </option>
-//         ))}
-//       </select>
-//     </div>
-//   );
-// }
-
-
 import React, { useState, useRef, useEffect } from 'react';
 import './AccountDropdown.css';
 

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import LoginFunction from '../api';
 import Loader from './Loader';
 import './Login.css';
 
@@ -9,21 +8,19 @@ export default function Login({ onLogin }) {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
-  const [statusType, setStatusType] = useState('');
-
-  // Show loader if loading or statusType is loading
-  const showLoader = loading || statusType === 'loading';
+  
+  // Show loader if loading 
+  const showLoader = loading ;
 
   const onStatusUpdate = (msg, type) => {
     setStatusMessage(msg);
-    setStatusType(type);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setStatusMessage('');
-    setStatusType('loading');
+
     
     try {
       // Call the parent's handleLogin function which handles storage
@@ -31,13 +28,15 @@ export default function Login({ onLogin }) {
         await onLogin(email, password);
       }
       
-      setStatusType('success');
-      setStatusMessage('Login and autofill completed successfully!');
     } catch (err) {
-      setStatusType('error');
-      setStatusMessage('Login error: ' + (err.message || 'Unknown error'));
+      console.error('Login error:', err);
+      setStatusMessage('Login failed: ' + (err.message || 'Unknown error'));
+
     }
-    setLoading(false);
+    setTimeout(() => {
+      setLoading(false);
+    },3000)
+    
   };
 
   return (
@@ -83,14 +82,6 @@ export default function Login({ onLogin }) {
           </span>
         </button>
       </form>
-      {statusMessage && !showLoader && (
-        <div className={`status-message status-${statusType}`}>
-          <span className="status-icon">
-            {statusType === 'success' ? '✓' : statusType === 'error' ? '✗' : 'ℹ'}
-          </span>
-          {statusMessage}
-        </div>
-      )}
       {showLoader && <Loader message={statusMessage || 'Logging in...'} />}
     </div>
   );

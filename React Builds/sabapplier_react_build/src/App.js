@@ -2,8 +2,12 @@ import React, { useState, useEffect } from 'react';
 import Login from './components/Login';
 import AccountDropdown from './components/AccountDropdown';
 import Loader from './components/Loader';
-import LoginFunction, { EmailLogin } from './api';
-import './App.css';
+import LoginFunction from './services/API/LoginFunction';
+import EmailLogin from './services/API/EmailLogin';
+
+import './App.css'
+
+
 
 export default function App() {
   const [savedUsers, setSavedUsers] = useState([]);
@@ -33,7 +37,7 @@ export default function App() {
     setLoading(true);
     setStatus('Logging in...');
     try {
-      const result = await LoginFunction(email, password, (msg) => setStatus(msg));
+      const result = await LoginFunction(email, password, (msg) => setStatus(msg)); // Change this to get Name
       
       console.log('Login result:', result);
       // Handle both possible response formats
@@ -59,11 +63,16 @@ export default function App() {
       setStatus('Login failed: ' + (err.message || 'Unknown error'));
       throw err; // Re-throw so Login component can handle it
     } finally {
-      setLoading(false);
+
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000); // Delay to show status message
     }
   };
 
   const handleAccountSelect = async (email) => {
+    setLoading(true);
+    setStatus('Auto logging in...');
     if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
       chrome.storage.local.get(['sabapplier_users'], async (result) => {
         const users = result.sabapplier_users || {};
@@ -73,22 +82,22 @@ export default function App() {
           alert('User not found.');
           return;
         }
-
-        setLoading(true);
-        setStatus('Auto logging in...');
         try {
           const response = await EmailLogin(email, (msg) => setStatus(msg));
           setCurrentUser({ email, name: user.name });
 
           if (!response || !response.success) {
-            setStatus('Auto-login failed');
+            setStatus(response.massage || 'Auto-login failed');
           } else {
-            setStatus('Auto-login successful!');
+            setStatus(response.massage || 'Auto-login successful!, success');
           }
         } catch (err) {
           setStatus('Auto-login failed: ' + (err.message || 'Unknown error'));
         }
+
+        setTimeout(() => {
         setLoading(false);
+      }, 3000); // Delay to show status message
       });
     }
   };
@@ -107,9 +116,9 @@ export default function App() {
         <Login onLogin={handleLogin} />
 
         <a href='https://sabapplier.com/signup'>Don't Have Account</a>
-        {status && <p>Status: {status}</p>}  {/* Massage From Backend */}
-        {currentUser && <p>Logged in as: {currentUser.name} ({currentUser.email})</p>}
-        {loading && <Loader message={status} />}
+        {/* {status && <p>Status: {status}</p>}  Massage From Backend */}
+        {/* {currentUser && <p>Logged in as: {currentUser.name} ({currentUser.email})</p>} */}
+        {loading && <Loader message={status || currentUser.name || currentUser.mail} />}
       </div>
     </div>
   );

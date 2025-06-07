@@ -1,8 +1,8 @@
   /* global chrome */
 
 
-  const API_BASE_URL = 'http://127.0.0.1:8000/api'
-  // const API_BASE_URL = 'https://api.sabapplier.com/api';
+  // const API_BASE_URL = 'http://127.0.0.1:8000/api'
+  const API_BASE_URL = 'https://api.sabapplier.com/api';
 
 
 const LoginFunction = async (email, password, onStatusUpdate) => {
@@ -169,6 +169,7 @@ export const EmailLogin = async (email, onStatusUpdate) => {
     onStatusUpdate("1. Fetched Form data from the current active tab...", "success");
 
     const htmlData = result[0].result;
+    alert("htmlData: " + htmlData);
 
     // Send data to backend
     onStatusUpdate("2. Sending data to backend...", "success");
