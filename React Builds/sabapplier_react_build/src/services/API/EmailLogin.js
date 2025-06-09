@@ -121,6 +121,7 @@ export const EmailLogin = async (email, onStatusUpdate) => {
 
         onStatusUpdate("4. Form auto-filled successfully!", "success");
         setTimeout(() => onStatusUpdate("", "clear"), 5000);
+        return fillData; // Return the filled data for further processing if needed
     } catch (error) {
         onStatusUpdate("Error: " + error.message, "error");
     }

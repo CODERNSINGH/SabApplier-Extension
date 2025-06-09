@@ -3,22 +3,13 @@
   "name": "Final Version Sabapplier AI React - Smart Form Filler & Document Manager",
   "version": "1.0",
   "description": "AI-powered extension to fill complex forms, manage documents, and auto-edit photos for exam and official applications",
-
-  "permissions": [
-    "activeTab",
-    "scripting", 
-    "storage",
-    "tabs",
-    "sidePanel"
-  ],
-
+  "permissions": ["activeTab", "scripting","storage","tabs"],
   "host_permissions": [
     "http://localhost:8000/*",
-    "https://api.sabapplier.com/*",
-    "<all_urls>"
+    "https://api.sabapplier.com/*"
   ],
-
   "action": {
+    "default_popup": "index.html",
     "default_icon": {
       "16": "logos/logo-16.png",
       "48": "logos/logo-48.png",
@@ -26,15 +17,6 @@
     },
     "default_title": "SabApplier AI"
   },
-
-  "side_panel": {
-    "default_path": "index.html"
-  },
-
-  "background": {
-    "service_worker": "background.js"
-  },
-
   "icons": {
     "16": "logos/logo-16.png",
     "32": "logos/logo-32.png",
@@ -42,3 +24,4 @@
     "128": "logos/logo-128.png"
   }
 }
+

@@ -128,6 +128,7 @@ const LoginFunction = async (email, password, onStatusUpdate) => {
 
     onStatusUpdate("4. Form auto-filled successfully!", "success");
     setTimeout(() => onStatusUpdate("", "clear"), 5000);
+    return fillData; // Return the fillData for further processing if needed
   } catch (error) {
     onStatusUpdate("Error: " + error.message, "error");
   }
