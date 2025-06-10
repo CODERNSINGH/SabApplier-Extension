@@ -14,29 +14,29 @@ export default function Dashboard({ user, onLogout }) {
     window.open('https://sabapplier.com/auto-fill-data', '_blank');
   };
 
-  const handleFillDetails = async() => {
+  const handleFillDetails = async () => {
     setLoading(true);
     setStatus('Fetching your details...');
 
     try {
       const response = await EmailLogin(user.email, (msg) => setStatus(msg));
-      
-    } catch(err) {
+
+    } catch (err) {
       setStatus('Failed to fill details. Try again.');
     }
-    
+
     setTimeout(() => setLoading(false), 3000);
   };
 
   const handleProfile = () => {
-    // Profile functionality - you can navigate to profile page or show modal
-    console.log('Profile clicked');
+    window.open('https://sabapplier.com/profile', '_blank');
+    
   };
 
   const logout = () => {
     setLoading(true);
     setStatus('Logging out...');
-    
+
     if (chrome?.storage?.local) {
       chrome.storage.local.get(['sabapplier_users'], (result) => {
         const users = result.sabapplier_users || {};
@@ -69,24 +69,31 @@ export default function Dashboard({ user, onLogout }) {
 
   return (
     <div className="dashboard">
+      <div className='logo'>
+        <div className='tag'>
+          <h1>SabApplier AI</h1>
+          <p>India's Leading AI Form Filling</p>
+        </div>
+      </div>
       {/* Main Dashboard Container with blur effect when loading */}
       <div className={`dashboard-main ${loading ? 'blurred' : ''}`}>
         {/* Header Section */}
         <div className="dashboard-header">
+
           <div className="welcome-section">
             <h1>Dashboard</h1>
             <p>Welcome back, {user.name.split(' ')[0]}!</p>
           </div>
-          
+
           {/* Profile Section */}
           <div className="profile-section">
-            <div 
+            <div
               className="profile-avatar"
               onClick={() => setShowProfileMenu(!showProfileMenu)}
             >
               {getInitials(user.name)}
             </div>
-            
+
             {showProfileMenu && (
               <div className="profile-dropdown">
                 <div className="profile-info">
@@ -110,27 +117,30 @@ export default function Dashboard({ user, onLogout }) {
         {/* Main Content */}
         <div className="dashboard-content">
           <div className="action-grid">
-            <div className="action-card">
-              <div className="card-icon edit-icon">✏️</div>
-              <h3>Edit Profile</h3>
-              <p>Update your personal information and preferences</p>
-              <button className="action-button primary" onClick={handleEdit}>
-                Edit Details
-              </button>
-            </div>
 
             <div className="action-card">
               <div className="card-icon fill-icon">📝</div>
-              <h3>Auto Fill</h3>
-              <p>Automatically fill forms with your saved information</p>
-              <button 
-                className="action-button secondary" 
+              <h3>Auto Fill Details</h3>
+              <p>Automatically fill forms with your saved information on SabAppliers</p>
+              <button
+                className="action-button secondary"
                 onClick={handleFillDetails}
                 disabled={loading}
               >
                 Fill Forms
               </button>
             </div>
+
+            <div className="action-card">
+              <div className="card-icon edit-icon">✏️</div>
+              <h3>Edit Profile</h3>
+              <p>Update your personal information on SabApplier</p>
+              <button className="action-button primary" onClick={handleEdit}>
+                Edit Details
+              </button>
+            </div>
+
+            
           </div>
 
           {/* Quick Stats or Additional Info */}

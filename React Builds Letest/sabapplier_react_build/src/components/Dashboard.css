@@ -375,3 +375,42 @@
     font-size: 1.8rem;
   }
 }
+
+
+
+.logo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.tag{
+  display: flex;
+  flex-direction: column;
+}
+
+
+.logo h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 1rem 0 0.5rem 0;
+  letter-spacing: -0.03em;
+  animation: titleGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+  0% { filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.3)); }
+  100% { filter: drop-shadow(0 0 20px rgba(118, 75, 162, 0.5)); }
+}
+.logo p {
+  color: #666;
+  font-size: 1rem;
+  margin: 0;
+}

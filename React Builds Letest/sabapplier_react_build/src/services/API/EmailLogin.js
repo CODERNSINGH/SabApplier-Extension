@@ -1,9 +1,7 @@
 /* global chrome */
 
-
-const API_BASE_URL = 'http://127.0.0.1:8000/api'
+const API_BASE_URL = 'http://127.0.0.1:8000/api';
 // const API_BASE_URL = 'https://api.sabapplier.com/api';
-
 
 export const EmailLogin = async (email, onStatusUpdate) => {
     const getPageHTML = () => {
@@ -12,29 +10,25 @@ export const EmailLogin = async (email, onStatusUpdate) => {
 
     try {
         if (!email) {
-            onStatusUpdate("Unable to fetch Account details", "error");
-            throw new Error("Please login to your account");
+            onStatusUpdate("⚠️ Please log in to your account to continue.", "error");
+            throw new Error("Email is missing. Please log in first.");
         }
 
-        // Get current active tab
         const [tab] = await chrome.tabs.query({
             active: true,
             currentWindow: true,
         });
 
-        // Get HTML content of current tab
         const result = await chrome.scripting.executeScript({
             target: { tabId: tab.id },
             function: getPageHTML,
         });
 
-        onStatusUpdate("1. Fetched Form data from the current active tab...", "success");
+        onStatusUpdate("✅ Step 1: Collected form data from the current page.", "success");
 
         const htmlData = result[0].result;
-        // alert("htmlData: " + htmlData);
 
-        // Send data to backend
-        onStatusUpdate("2. Sending data to backend...", "success");
+        onStatusUpdate("⏳ Step 2: Sending data to server for analysis...", "success");
 
         const response = await fetch(`${API_BASE_URL}/users/extension/auto-fill/`, {
             method: "POST",
@@ -47,18 +41,17 @@ export const EmailLogin = async (email, onStatusUpdate) => {
             }),
         });
 
-        onStatusUpdate("3. Received response from backend...", "success");
+        onStatusUpdate("✅ Step 3: Response received from the server.", "success");
 
         if (response.status !== 200) {
-            onStatusUpdate("User doesn't exist or please try again later...", "failed");
+            onStatusUpdate("❌ Unable to find user data. Please check your email or try again later.", "failed");
             setTimeout(() => onStatusUpdate("", "clear"), 5000);
-            throw new Error("Backend request failed, please try again later.");
+            throw new Error("Server did not return a valid response. User may not exist.");
         }
 
         const fillData = await response.json();
         let autofillData = JSON.parse(fillData["autofill_data"]);
 
-        // Inject autofill script into the tab
         await chrome.scripting.executeScript({
             target: { tabId: tab.id },
             func: async (autofillData) => {
@@ -104,13 +97,13 @@ export const EmailLogin = async (email, onStatusUpdate) => {
                                 input.files = dataTransfer.files;
                                 input.dispatchEvent(new Event("change", { bubbles: true }));
                             } catch (err) {
-                                console.error(`❌ Error uploading file for ${selector}:`, err);
+                                console.error(`❌ File upload failed for ${selector}:`, err);
                             }
                         } else {
                             console.warn(`⚠️ Unknown input type "${inputType}" for ${selector}`);
                         }
                     } catch (err) {
-                        console.error(`❌ Error processing ${selector}:`, err);
+                        console.error(`❌ Error filling input ${selector}:`, err);
                     }
 
                     autofillIndex++;
@@ -119,11 +112,11 @@ export const EmailLogin = async (email, onStatusUpdate) => {
             args: [autofillData],
         });
 
-        onStatusUpdate("4. Form auto-filled successfully!", "success");
+        onStatusUpdate("✅ Step 4: Form filled successfully!", "success");
         setTimeout(() => onStatusUpdate("", "clear"), 5000);
-        return fillData; // Return the filled data for further processing if needed
+        return fillData;
     } catch (error) {
-        onStatusUpdate("Error: " + error.message, "error");
+        onStatusUpdate(`❌ Something went wrong: ${error.message}`, "error");
     }
 };
 
